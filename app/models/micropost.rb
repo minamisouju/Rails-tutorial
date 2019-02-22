@@ -14,12 +14,4 @@ class Micropost < ApplicationRecord
         errors.add(:picture, "should be less than 5MB")
       end
     end
-
-    #replyに含まれているポストを返す
-    # micropost投稿時に@の文字列をreplyカラムに保存する
-    # replyされたポストを取得するメソッド
-    # replyカラムの文字列と、名前が一致するポストを検索する
-    # def including_replies
-    #   where(:in_reply_to, self.user.name)
-    # end
 end
