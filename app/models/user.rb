@@ -69,7 +69,8 @@ class User < ApplicationRecord
 
   def feed
     following_ids = "SELECT followed_id FROM relationships WHERE follower_id = :user_id"
-    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id)
+    user_name = convert_name_as_reply(name)
+    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id).or(Micropost.including_replies(user_name))
   end
 
   # ユーザーをフォローする
@@ -85,6 +86,11 @@ class User < ApplicationRecord
   # 現在のユーザーがフォローしてたらtrueを返す
   def following?(other_user)
     following.include?(other_user)
+  end
+  
+  #渡された名前をin_reply_toカラムに保存されている形式に変換して返す
+  def convert_name_as_reply(row_name)
+    row_name.split(' ').join
   end
 
   private

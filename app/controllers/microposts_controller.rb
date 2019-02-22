@@ -3,7 +3,8 @@ class MicropostsController < ApplicationController
     before_action :correct_user, only: :destroy
 
     def create
-        @micropost = current_user.microposts.build(micropost_params)
+      @micropost = current_user.microposts.build(micropost_params)
+      set_in_reply_to
         if @micropost.save
           flash[:success] = "Micropost created!"
           redirect_to root_url
@@ -20,9 +21,15 @@ class MicropostsController < ApplicationController
     end
 
     private
+        #@replyがあればin_reply_toカラムに代入する
+        def set_in_reply_to
+          #リプライはひとりにしかつけれらない仕様
+          reply_user = @micropost[:content].slice(/(?<=@)[^\s]+/)
+          @micropost[:in_reply_to] = reply_user unless reply_user.nil?
+        end
 
         def micropost_params
-          params.require(:micropost).permit(:content, :picture)
+          params.require(:micropost).permit(:content, :picture, :in_reply_to)
         end
 
         def correct_user

@@ -111,5 +111,9 @@ class UserTest < ActiveSupport::TestCase
     archer.microposts.each do |post_unfollowed|
       assert_not michael.feed.include?(post_unfollowed)
     end
+    #リプライされている投稿を確認
+    converted_name = archer.convert_name_as_reply(archer.name)
+    replying_post = michael.microposts.including_replies(converted_name)[0]
+    assert archer.feed.include?(replying_post)
   end
 end
