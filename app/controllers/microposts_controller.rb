@@ -21,7 +21,7 @@ class MicropostsController < ApplicationController
     end
 
     private
-        #@replyがあればin_reply_toカラムに代入する
+        #@replyがあればin_reply_toに代入する
         def set_in_reply_to
           #リプライはひとりにしかつけれらない仕様
           reply_user = @micropost[:content].slice(/(?<=@)[^\s]+/)
@@ -29,7 +29,7 @@ class MicropostsController < ApplicationController
         end
 
         def micropost_params
-          params.require(:micropost).permit(:content, :picture, :in_reply_to)
+          params.require(:micropost).permit(:content, :picture)
         end
 
         def correct_user

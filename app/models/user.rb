@@ -12,6 +12,7 @@ class User < ApplicationRecord
   validates :email, presence: true, length:{maximum: 255}, format: {with: VALID_EMAIL_REGEX}, uniqueness:{ case_sensitive: false }
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  validates :user_name, presence: true, length: { maximum: 20 }, uniqueness:{ case_sensitive: true }
 
   # 渡された文字列のハッシュ値を返す
   def User.digest(string)
@@ -68,8 +69,9 @@ class User < ApplicationRecord
   end
 
   def feed
-    following_ids = "SELECT followed_id FROM relationships WHERE follower_id = :user_id"
-    user_name = convert_name_as_reply(name)
+    #どっちでも可
+    #following_ids = "SELECT followed_id FROM relationships WHERE follower_id = :user_id"
+    following_ids = Relationship.where(follower_id: id).map(&:followed_id).join(",")
     Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id).or(Micropost.including_replies(user_name))
   end
 
@@ -86,11 +88,6 @@ class User < ApplicationRecord
   # 現在のユーザーがフォローしてたらtrueを返す
   def following?(other_user)
     following.include?(other_user)
-  end
-  
-  #渡された名前をin_reply_toカラムに保存されている形式に変換して返す
-  def convert_name_as_reply(row_name)
-    row_name.split(' ').join
   end
 
   private

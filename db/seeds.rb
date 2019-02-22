@@ -5,26 +5,29 @@ User.create!(name:  "Example User",
   password_confirmation: "foobar",
   admin:     true,
   activated: true,
-  activated_at: Time.zone.now)
+  activated_at: Time.zone.now,
+  user_name: "Example_User")
 
-  User.create!(name:  "Test User",
-    email: "test@railstutorial.org",
-    password:              "foobar",
-    password_confirmation: "foobar",
-    admin:     false,
-    activated: true,
-    activated_at: Time.zone.now)
+User.create!(name:  "Test User",
+  email: "test@railstutorial.org",
+  password:              "foobar",
+  password_confirmation: "foobar",
+  activated: true,
+  activated_at: Time.zone.now,
+  user_name: "Test_User")
 
 99.times do |n|
 name  = Faker::Name.name
 email = "example-#{n+1}@railstutorial.org"
 password = "password"
+user_name = "#{n}user"
 User.create!(name:  name,
     email: email,
     password:              password,
     password_confirmation: password,
     activated: true,
-    activated_at: Time.zone.now)
+    activated_at: Time.zone.now,
+    user_name: user_name)
 end
 
 # マイクロポスト

@@ -46,7 +46,7 @@ van:
   user: lana
 
 reply:
-  content: "this is test post for reply. @SterlingArcher should have this post in his feed!!"
-  in_reply_to: "SterlingArcher"
+  content: "this is test post for reply. @Sterling_Archer should have this post in his feed!!"
+  in_reply_to: "Sterling_Archer"
   created_at: <%= 1.hours.ago %>
   user: michael

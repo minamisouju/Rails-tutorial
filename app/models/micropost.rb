@@ -1,6 +1,8 @@
 class Micropost < ApplicationRecord
   belongs_to :user
   default_scope -> { order(created_at: :desc) }
+  # Railsチュートリアルの記述に従った実装
+  # あまり呼ばれなさそうなので不要かも
   scope :including_replies, -> (user_name){ where(in_reply_to: user_name) }
   mount_uploader :picture, PictureUploader
   validates :user_id, presence:true
