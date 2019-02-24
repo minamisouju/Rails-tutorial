@@ -33,7 +33,9 @@ class UsersController < ApplicationController
   
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(user_params)
+    @user.attributes = {name:user_params[:name], email:user_params[:email], 
+      password:user_params[:password], password_confirmation:user_params[:password_confirmation]}
+    if @user.save
       flash[:success] = "Profile updated"
       redirect_to @user
     else
@@ -75,8 +77,8 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless current_user?(@user)
     end
 
-     # 管理者かどうか確認
-     def admin_user
+    # 管理者かどうか確認
+    def admin_user
       redirect_to(root_url) unless current_user.admin?
     end
 end

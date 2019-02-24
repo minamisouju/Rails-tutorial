@@ -9,10 +9,8 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     log_in_as(@user)
     get edit_user_path(@user)
     assert_template 'users/edit'
-    assert_select 'input#user_primary_name', count:0
     patch user_path(@user), params: { user: { name:  "",
                                               email: "foo@invalid",
-                                              primary_name: "user_michael",
                                               password:              "foo",
                                               password_confirmation: "bar" } }
     assert_template 'users/edit'
@@ -26,10 +24,8 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     assert_redirected_to edit_user_url(@user)
     name  = "Foo Bar"
     email = "foo@bar.com"
-    primary_name = "user_michael"
     patch user_path(@user), params: { user: { name:  name,
                                               email: email,
-                                              primary_name: primary_name,
                                               password:              "",
                                               password_confirmation: "" } }
     assert_not flash.empty?
@@ -37,6 +33,18 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     @user.reload
     assert_equal name,  @user.name
     assert_equal email, @user.email
-    assert_equal primary_name, @user.primary_name
+  end
+
+  test "primary_name should not be changed" do
+    log_in_as(@user)
+    get edit_user_path(@user)
+    assert_select 'input#user_primary_name', count:0
+    primary_name = @user.primary_name
+    patch user_path(@user), params: { user: { name:  "Foo Bar",
+                                              email: "foo@bar.com",
+                                              primary_name: "invalid",
+                                              password:              "foo",
+                                              password_confirmation: "bar" } }
+    assert_equal primary_name, @user.reload.primary_name
   end
 end
