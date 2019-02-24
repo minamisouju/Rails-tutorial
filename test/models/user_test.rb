@@ -3,7 +3,7 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   def setup
     @user = User.new(name: "Example User", email: "user@example.com",
-      password: "foobar", password_confirmation: "foobar", user_name: "exampleuser")
+      password: "foobar", password_confirmation: "foobar", primary_name: "exampleuser")
   end
 
   test "should be valid" do
@@ -20,8 +20,8 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
-  test "user_name should be present" do
-    @user.user_name = "     "
+  test "primary_name should be present" do
+    @user.primary_name = "     "
     assert_not @user.valid?
   end
   
@@ -35,8 +35,8 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
-  test "user_name should not be too long" do
-    @user.email = "a" * 21
+  test "primary_name should not be too long" do
+    @user.primary_name = "a" * 21
     assert_not @user.valid?
   end
 
@@ -82,12 +82,12 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
-  test "user_name should be unique" do
+  test "primary_name should be unique" do
     duplicate_user = @user.dup
     @user.save
     assert_not duplicate_user.valid?
     duplicate_user.email = "duplicate@example.com"
-    duplicate_user.user_name = duplicate_user.user_name.upcase
+    duplicate_user.primary_name = duplicate_user.primary_name.upcase
     assert duplicate_user.valid?
   end
 
@@ -131,7 +131,7 @@ class UserTest < ActiveSupport::TestCase
       assert_not michael.feed.include?(post_unfollowed)
     end
     #リプライされている投稿を確認
-    replying_post = michael.microposts.including_replies(archer.user_name)[0]
+    replying_post = michael.microposts.including_replies(archer.primary_name)[0]
     assert archer.feed.include?(replying_post)
   end
 end

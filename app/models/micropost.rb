@@ -3,7 +3,7 @@ class Micropost < ApplicationRecord
   default_scope -> { order(created_at: :desc) }
   # Railsチュートリアルの記述に従った実装
   # あまり呼ばれなさそうなので不要かも
-  scope :including_replies, -> (user_name){ where(in_reply_to: user_name) }
+  scope :including_replies, -> (primary_name){ where(in_reply_to: primary_name) }
   mount_uploader :picture, PictureUploader
   validates :user_id, presence:true
   validates :content, presence:true, length:{maximum:140}

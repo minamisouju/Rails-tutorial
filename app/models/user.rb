@@ -12,7 +12,7 @@ class User < ApplicationRecord
   validates :email, presence: true, length:{maximum: 255}, format: {with: VALID_EMAIL_REGEX}, uniqueness:{ case_sensitive: false }
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
-  validates :user_name, presence: true, length: { maximum: 20 }, uniqueness:{ case_sensitive: true }
+  validates :primary_name, presence: true, length: { maximum: 20 }, uniqueness:{ case_sensitive: true }
 
   # 渡された文字列のハッシュ値を返す
   def User.digest(string)
@@ -72,7 +72,7 @@ class User < ApplicationRecord
     #どっちでも可
     #following_ids = "SELECT followed_id FROM relationships WHERE follower_id = :user_id"
     following_ids = Relationship.where(follower_id: id).map(&:followed_id).join(",")
-    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id).or(Micropost.including_replies(user_name))
+    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id).or(Micropost.including_replies(primary_name))
   end
 
   # ユーザーをフォローする
