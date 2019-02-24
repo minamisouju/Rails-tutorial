@@ -37,6 +37,10 @@ content = Faker::Lorem.sentence(5)
 users.each { |user| user.microposts.create!(content: content) }
 end
 
+# リプライポスト
+user = User.second
+user.microposts.create!(content: "hello, @Example_User !!!")
+
 # リレーションシップ
 users = User.all
 user  = users.first
