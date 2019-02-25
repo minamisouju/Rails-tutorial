@@ -12,7 +12,8 @@ class User < ApplicationRecord
   validates :email, presence: true, length:{maximum: 255}, format: {with: VALID_EMAIL_REGEX}, uniqueness:{ case_sensitive: false }
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
-  validates :primary_name, presence: true, length: { maximum: 20 }, uniqueness:{ case_sensitive: true }
+  validates :primary_name, presence: true, length: { maximum: 20 }, uniqueness:{ case_sensitive: true }, format: {with: /\A\w+\z/, message: '半角英数字とアンダースコアのみが使用できます'}
+  #半角英数字のみ（\w）にする！（, \s . - などはNG）
 
   # 渡された文字列のハッシュ値を返す
   def User.digest(string)

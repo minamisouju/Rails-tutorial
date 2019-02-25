@@ -31,7 +31,7 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
       delete micropost_path(first_micropost)
     end
     # リプライつき投稿を送信
-    reply_content = "@Sterling_Archer reply test post"
+    reply_content = "@Sterling_Archer have this post"
     assert_difference 'Micropost.count', 1 do
       post microposts_path, params: { micropost:
                                       { content: reply_content } }

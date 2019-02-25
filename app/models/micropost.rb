@@ -20,8 +20,8 @@ class Micropost < ApplicationRecord
 
     #@replyがあればin_reply_toに代入する
     def add_reply_column
-      #リプライはひとりにしかつけれらない
-      reply_user = content.slice(/(?<=@)[^\s]+/)
+      #複数リプライは未対応
+      reply_user = content.slice(/(?<=@)\w+/)
       self.in_reply_to = reply_user unless reply_user.nil?
     end
 end

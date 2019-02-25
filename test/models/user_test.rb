@@ -82,6 +82,14 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test "primary_name validation should reject invalid character" do
+    invalid_primary_names = ['abc-de', '@abcde', 'abc de', 'abc,de', 'abc\'de', 'abcd"e']
+    invalid_primary_names.each do |invalid_primary_name|
+      @user.primary_name = invalid_primary_name
+      assert_not @user.valid?
+    end
+  end
+
   test "primary_name should be unique" do
     duplicate_user = @user.dup
     @user.save
