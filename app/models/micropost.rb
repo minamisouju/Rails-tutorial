@@ -1,5 +1,6 @@
 class Micropost < ApplicationRecord
   belongs_to :user
+  has_many :reply_posts, dependent: :destroy
   default_scope -> { order(created_at: :desc) }
   # Railsチュートリアルの記述に従った実装
   # あまり呼ばれなさそうなので不要かも

@@ -28,4 +28,12 @@ class MicropostTest < ActiveSupport::TestCase
   test "order should be most recent first" do
     assert_equal microposts(:most_recent), Micropost.first
   end
+
+  test "associated reply_posts should be destroy" do
+    @micropost.save
+    @micropost.reply_posts.create!(user_id: 111)
+    assert_difference 'ReplyPost.count', -1 do
+      @micropost.destroy
+    end
+  end 
 end
