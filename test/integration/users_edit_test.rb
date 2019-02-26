@@ -40,11 +40,11 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     get edit_user_path(@user)
     assert_select 'input#user_primary_name', count:0
     primary_name = @user.primary_name
-    patch user_path(@user), params: { user: { name:  "Foo Bar",
-                                              email: "foo@bar.com",
+    patch user_path(@user), params: { user: { name:  @user.name,
+                                              email: @user.email,
                                               primary_name: "invalid",
-                                              password:              "foo",
-                                              password_confirmation: "bar" } }
+                                              password:              "",
+                                              password_confirmation: "" } }
     assert_equal primary_name, @user.reload.primary_name
   end
 end

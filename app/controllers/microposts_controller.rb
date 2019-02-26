@@ -14,8 +14,11 @@ class MicropostsController < ApplicationController
     end
 
     def destroy
-      @micropost.destroy
-      flash[:success] = "Micropost deleted"
+      if @micropost.destroy
+        flash[:success] = "Micropost deleted"
+      else
+        flash[:danger] = "Failed deleting micropost"
+      end
       redirect_back(fallback_location: root_url)
     end
 

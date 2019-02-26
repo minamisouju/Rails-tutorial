@@ -7,6 +7,7 @@ class User < ApplicationRecord
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   before_create :create_activation_digest
+  before_update :protect_primary_name
   validates :name, presence: true, length:{maximum: 50}
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, presence: true, length:{maximum: 255}, format: {with: VALID_EMAIL_REGEX}, uniqueness:{ case_sensitive: false }
@@ -70,10 +71,10 @@ class User < ApplicationRecord
   end
 
   def feed
-    #どっちでも可
-    #following_ids = "SELECT followed_id FROM relationships WHERE follower_id = :user_id"
-    following_ids = Relationship.where(follower_id: id).map(&:followed_id).join(",")
-    Micropost.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id).or(Micropost.including_replies(primary_name))
+    following_ids = Relationship.where(follower_id: id).map(&:followed_id)
+    #フォローユーザーと自分自身のid
+    displaying_ids = (following_ids << id).join(',')
+    Micropost.where("user_id IN (#{displaying_ids})").or(Micropost.including_replies(primary_name))
   end
 
   # ユーザーをフォローする
@@ -99,5 +100,10 @@ class User < ApplicationRecord
     def create_activation_digest
       self.activation_token = User.new_token
       self.activation_digest = User.digest(activation_token)
+    end
+
+    # primary_nameはupdate不可
+    def protect_primary_name
+     self.primary_name = primary_name_was
     end
 end

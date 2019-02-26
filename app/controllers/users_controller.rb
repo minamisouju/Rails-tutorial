@@ -33,10 +33,7 @@ class UsersController < ApplicationController
   
   def update
     @user = User.find(params[:id])
-    # primary_nameは変更しない
-    @user.attributes = {name:user_params[:name], email:user_params[:email], 
-      password:user_params[:password], password_confirmation:user_params[:password_confirmation]}
-    if @user.save
+    if @user.update_attributes(user_params)
       flash[:success] = "Profile updated"
       redirect_to @user
     else
