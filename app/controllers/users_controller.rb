@@ -64,7 +64,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :primary_name)
     end
 
     # beforeアクション
@@ -75,8 +75,8 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless current_user?(@user)
     end
 
-     # 管理者かどうか確認
-     def admin_user
+    # 管理者かどうか確認
+    def admin_user
       redirect_to(root_url) unless current_user.admin?
     end
 end

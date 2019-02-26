@@ -3,7 +3,7 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   def setup
     @user = User.new(name: "Example User", email: "user@example.com",
-      password: "foobar", password_confirmation: "foobar")
+      password: "foobar", password_confirmation: "foobar", primary_name: "exampleuser")
   end
 
   test "should be valid" do
@@ -19,6 +19,11 @@ class UserTest < ActiveSupport::TestCase
     @user.email = "     "
     assert_not @user.valid?
   end
+
+  test "primary_name should be present" do
+    @user.primary_name = "     "
+    assert_not @user.valid?
+  end
   
   test "name should not be too long" do
     @user.name = "a" * 51
@@ -27,6 +32,11 @@ class UserTest < ActiveSupport::TestCase
   
   test "email should not be too long" do
     @user.email = "a" * 244 + "@example.com"
+    assert_not @user.valid?
+  end
+
+  test "primary_name should not be too long" do
+    @user.primary_name = "a" * 21
     assert_not @user.valid?
   end
 
@@ -72,6 +82,23 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test "primary_name validation should reject invalid character" do
+    invalid_primary_names = ['abc-de', '@abcde', 'abc de', 'abc,de', 'abc\'de', 'abcd"e']
+    invalid_primary_names.each do |invalid_primary_name|
+      @user.primary_name = invalid_primary_name
+      assert_not @user.valid?
+    end
+  end
+
+  test "primary_name should be unique" do
+    duplicate_user = @user.dup
+    @user.save
+    assert_not duplicate_user.valid?
+    duplicate_user.email = "duplicate@example.com"
+    duplicate_user.primary_name = duplicate_user.primary_name.upcase
+    assert duplicate_user.valid?
+  end
+
   test "authenticated? should return false for a user with nil digest" do
     assert_not @user.authenticated?(:remember, '')
   end
@@ -111,5 +138,8 @@ class UserTest < ActiveSupport::TestCase
     archer.microposts.each do |post_unfollowed|
       assert_not michael.feed.include?(post_unfollowed)
     end
+    #リプライされている投稿を確認
+    replying_post = michael.microposts.including_replies(archer.primary_name)[0]
+    assert archer.feed.include?(replying_post)
   end
 end

@@ -27,4 +27,12 @@ class MicropostsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to root_url
   end
+
+  test "should set in_reply_to" do
+    log_in_as(users(:michael))
+    assert_difference 'Micropost.count', 1 do
+      post microposts_path, params: { micropost: { content: "test test @abcde TEST" } }
+    end
+    assert_equal 'abcde', assigns[:micropost].in_reply_to
+  end
 end

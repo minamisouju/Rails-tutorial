@@ -34,4 +34,17 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     assert_equal name,  @user.name
     assert_equal email, @user.email
   end
+
+  test "primary_name should not be changed" do
+    log_in_as(@user)
+    get edit_user_path(@user)
+    assert_select 'input#user_primary_name', count:0
+    primary_name = @user.primary_name
+    patch user_path(@user), params: { user: { name:  @user.name,
+                                              email: @user.email,
+                                              primary_name: "invalid",
+                                              password:              "",
+                                              password_confirmation: "" } }
+    assert_equal primary_name, @user.reload.primary_name
+  end
 end

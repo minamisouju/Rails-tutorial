@@ -30,9 +30,23 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     assert_difference 'Micropost.count', -1 do
       delete micropost_path(first_micropost)
     end
+    # リプライつき投稿を送信
+    reply_content = "@Sterling_Archer have this post"
+    assert_difference 'Micropost.count', 1 do
+      post microposts_path, params: { micropost:
+                                      { content: reply_content } }
+    end
+    assert assigns[:micropost].in_reply_to?
+    follow_redirect!
+    assert_match reply_content, response.body
     # 違うユーザーのプロフィールにアクセスする
     get user_path(users(:archer))
     assert_select 'a', { text: 'delete', count: 0 }
+    #違うユーザーとしてログインする
+    log_out_user
+    log_in_as(users(:archer))
+    get root_path
+    assert_match reply_content, response.body
   end
 
   test "micropost sidebar count" do
