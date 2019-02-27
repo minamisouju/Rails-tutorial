@@ -31,12 +31,11 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
       delete micropost_path(first_micropost)
     end
     # リプライつき投稿を送信
-    reply_content = "@Sterling_Archer have this post"
-    assert_difference 'Micropost.count', 1 do
+    reply_content = "@Malory_Archer, @Sterling_Archer have this post"
+    assert_difference 'ReplyPost.count', 2 do
       post microposts_path, params: { micropost:
                                       { content: reply_content } }
     end
-    assert assigns[:micropost].in_reply_to?
     follow_redirect!
     assert_match reply_content, response.body
     # 違うユーザーのプロフィールにアクセスする
