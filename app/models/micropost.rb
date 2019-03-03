@@ -8,6 +8,7 @@ class Micropost < ApplicationRecord
   validates :content, presence:true, length:{maximum:140}
   validate :picture_size
 
+  # userへのリプライポストを返す
   def self.find_reply_post(user_id)
     reply_post_ids = ReplyPost.where(user_id: user_id).map(&:micropost_id)
     Micropost.where(id: reply_post_ids)
@@ -24,11 +25,9 @@ class Micropost < ApplicationRecord
     #@replyがprimary_nameならばreply_postにレコード追加
     def create_reply_post
       reply_users = content.scan(/(?<=@)\w+/)
-      if !reply_users.empty?
-        reply_users.each do |reply_user|
-          target_user = User.find_by(primary_name: reply_user)
-          self.reply_posts.create!(user_id: target_user.id) unless target_user.nil?
-        end
+      reply_users.try(:each) do |reply_user|
+        target_user = User.find_by(primary_name: reply_user)
+        reply_posts.create!(user_id: target_user.id) unless target_user.nil?
       end
     end
 end
