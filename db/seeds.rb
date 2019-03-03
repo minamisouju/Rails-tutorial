@@ -8,13 +8,19 @@ User.create!(name:  "Example User",
   activated_at: Time.zone.now,
   primary_name: "Example_User")
 
-User.create!(name:  "Test User",
-  email: "test@railstutorial.org",
-  password:              "foobar",
-  password_confirmation: "foobar",
-  activated: true,
-  activated_at: Time.zone.now,
-  primary_name: "Test_User")
+3.times do |n|
+  name  = "TestUser_#{n + 1}"
+  email = "test-#{n + 1}@railstutorial.org"
+  password = "password"
+  primary_name = "test_#{n + 1}"
+  User.create!(name:  name,
+      email: email,
+      password:              password,
+      password_confirmation: password,
+      activated: true,
+      activated_at: Time.zone.now,
+      primary_name: primary_name)
+  end
 
 99.times do |n|
 name  = Faker::Name.name
@@ -39,7 +45,8 @@ end
 
 # リプライポスト
 user = User.second
-user.microposts.create!(content: "hello, @Example_User !!!")
+user.microposts.create!(content: "single reply test, @Example_User !!!")
+user.microposts.create!(content: "multi reply test, @test_2 , @test_3 and @Example_User !!!")
 
 # リレーションシップ
 users = User.all

@@ -73,8 +73,8 @@ class User < ApplicationRecord
   def feed
     following_ids = Relationship.where(follower_id: id).map(&:followed_id)
     #フォローユーザーと自分自身のid
-    displaying_ids = (following_ids << id).join(',')
-    Micropost.where("user_id IN (#{displaying_ids})").or(Micropost.including_replies(primary_name))
+    displaying_ids = following_ids << id
+    Micropost.where(user_id: displaying_ids).or(Micropost.find_reply_post(id))
   end
 
   # ユーザーをフォローする

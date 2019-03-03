@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190223163340) do
+ActiveRecord::Schema.define(version: 20190227095617) do
 
   create_table "microposts", force: :cascade do |t|
     t.text "content"
     t.integer "user_id"
     t.string "picture"
-    t.string "in_reply_to"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id", "created_at"], name: "index_microposts_on_user_id_and_created_at"
@@ -31,6 +30,14 @@ ActiveRecord::Schema.define(version: 20190223163340) do
     t.index ["followed_id"], name: "index_relationships_on_followed_id"
     t.index ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
+  end
+
+  create_table "reply_posts", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "micropost_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["micropost_id"], name: "index_reply_posts_on_micropost_id"
   end
 
   create_table "users", force: :cascade do |t|

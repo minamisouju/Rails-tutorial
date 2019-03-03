@@ -139,7 +139,8 @@ class UserTest < ActiveSupport::TestCase
       assert_not michael.feed.include?(post_unfollowed)
     end
     #リプライされている投稿を確認
-    replying_post = michael.microposts.including_replies(archer.primary_name)[0]
-    assert archer.feed.include?(replying_post)
+    assert archer.feed.include?(microposts(:reply))    
+    assert archer.feed.include?(microposts(:multi_reply))
+    assert lana.feed.include?(microposts(:multi_reply))
   end
 end

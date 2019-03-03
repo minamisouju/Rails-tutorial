@@ -47,6 +47,10 @@ van:
 
 reply:
   content: "this is test post for reply. @Sterling_Archer should have this post in his feed!!"
-  in_reply_to: "Sterling_Archer"
   created_at: <%= 1.hours.ago %>
+  user: michael
+
+multi_reply:
+  content: "@Lana_Kane @Malory_Archer @Sterling_Archer should have this post in their feed!!"
+  created_at: <%= 2.hours.ago %>
   user: michael
